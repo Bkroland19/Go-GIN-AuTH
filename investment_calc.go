@@ -1,19 +1,19 @@
 package main
 
 import (
-	"math"
 	"fmt"
+	"math"
 )
 
 
 
 func main()  {
- var investmentAmount = 1000
- var annualInterestRate = 4.25
- var years = 1
+ var investmentAmount, years float64 = 1000,10
+  annualInterestRate := 4.25
 
- var futureInvestmentValue = float64(investmentAmount) * math.Pow(1 + annualInterestRate / 100,float64(years))
- 
+
+ futureInvestmentValue := investmentAmount * math.Pow(1 + annualInterestRate / 100,years)
+
  fmt.Println(futureInvestmentValue)
  }
  
