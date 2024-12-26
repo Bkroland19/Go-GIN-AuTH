@@ -2,20 +2,33 @@ package main
 
 import (
 	"fmt"
-	"math"
 )
 
 
 
 func main()  {
- var investmentAmount, years float64 = 1000,10
-  annualInterestRate := 4.25
+ var investmentAmount, actualReturn float64 = 1000,10
 
+  fmt.Print("Enter Actual return amount: ")
+  fmt.Scan(&actualReturn)
+  
+  fmt.Print("Enter investment amount: ")
   fmt.Scan(&investmentAmount)
 
- futureInvestmentValue := investmentAmount * math.Pow(1 + annualInterestRate / 100,years)
 
- fmt.Println(futureInvestmentValue)
+ 
+
+ profits := actualReturn - investmentAmount
+
+ if profits > 0 {
+ fmt.Print("You made a profit of: ")
+ fmt.Println( profits)
+
+ } else {
+	 fmt.Print("You made a loss of: ")
+	 fmt.Println( profits)
+ }
+
  }
  
 
