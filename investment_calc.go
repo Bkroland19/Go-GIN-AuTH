@@ -7,28 +7,40 @@ import (
 
 
 func main()  {
- var investmentAmount, actualReturn float64 = 1000,10
-
-  fmt.Print("Enter Actual return amount: ")
-  fmt.Scan(&actualReturn)
-  
-  fmt.Print("Enter investment amount: ")
-  fmt.Scan(&investmentAmount)
+ var revenue float64
+ var expenses float64
+ var taxRate float64
 
 
- 
+   revenue = outPutText("revenue: ")
 
- profits := actualReturn - investmentAmount
+    expenses = outPutText("expenses: ")
 
- if profits > 0 {
- fmt.Print("You made a profit of: ")
- fmt.Println( profits)
+    taxRate = outPutText("taxRate: ")
 
- } else {
-	 fmt.Print("You made a loss of: ")
-	 fmt.Println( profits)
- }
+    calculateEbt(revenue, taxRate, expenses)
 
+
+   
  }
  
 
+func outPutText(text string) float64 {
+    var userInput float64
+   fmt.Print("Enter: ",text)
+    fmt.Scanln(&userInput)
+
+    return userInput
+} 
+
+func calculateEbt(revenue ,taxRate , expenses float64) (ebt ,profit ,ratio float64) {
+    ebt = revenue - expenses
+    profit = ebt * (1 - taxRate/100)
+    ratio = ebt/profit
+
+    fmt.Println("Earnings before tax: ", ebt)
+    fmt.Println("Profit: ", profit)
+    fmt.Println("Ratio: ", ratio)
+
+    return ebt, profit, ratio
+}
