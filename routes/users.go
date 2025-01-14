@@ -57,6 +57,7 @@ func Login(c *gin.Context){
 	}
 
 	err = user.ValidateCredentials()
+	fmt.Print(err)
 
 	if err != nil {
 		fmt.Print("tru..........")

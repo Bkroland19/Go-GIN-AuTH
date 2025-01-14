@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"example.com/rest-api/db"
 	"example.com/rest-api/utils"
@@ -51,11 +52,13 @@ func (u *User) Save() error {
 // It queries the database for the user's email and retrieves the associated hashed password.
 // If the password is valid, it returns nil; otherwise, it returns an error indicating invalid credentials.
 func (u *User) ValidateCredentials() error {
-    query := "SELECT password,id FROM users WHERE email = ?"
+
+    fmt.Print(u)
+    query := "SELECT id,password FROM users WHERE email = ?"
     row := db.DB.QueryRow(query, u.Email)
 
     var retrievedPassword string
-    err := row.Scan(&u.ID ,&retrievedPassword)
+    err := row.Scan(&u.ID,&retrievedPassword)
     if err == sql.ErrNoRows {
         return errors.New("email not found")
     } else if err != nil {
