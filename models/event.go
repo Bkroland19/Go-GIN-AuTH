@@ -21,28 +21,44 @@ UserId 		int
 
 var events []Event = []Event{}
 
+// Save inserts a new event into the events table in the database.
+// It prepares an SQL INSERT statement and executes it with the event's attributes.
+// If the insertion is successful, it updates the Event struct with the new event's ID.
 func (e Event) Save() error {
+    // Define the SQL INSERT query to add a new event to the events table.
+    query := `
+    INSERT INTO events(name,description,location,dateTime,user_id)
+    VALUES (?,?,?,?,?)
+    `
 
-	query := `
-	INSERT INTO events(name,description,location,dateTime,user_id)
-	VALUES (?,?,?,?,?)
-	`
+    // Prepare the SQL statement for execution.
+    stmt, err := db.DB.Prepare(query)
+    if err != nil {
+        // If there is an error preparing the statement, return the error.
+        return err
+    }
+    // Ensure the statement is closed after the function completes to free up resources.
+    defer stmt.Close()
 
-	stmt, err := db.DB.Prepare(query)
+    // Execute the prepared statement with the event's attributes.
+    result, err := stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserId)
+    if err != nil {
+        // If there is an error executing the statement, return the error.
+        return err
+    }
 
-	if err != nil {
-		return err
-	}
+    // Retrieve the ID of the newly inserted event.
+    id, err := result.LastInsertId()
+    if err != nil {
+        // If there is an error retrieving the last insert ID, return the error.
+        return err
+    }
 
-	defer stmt.Close()
-	result, err := stmt.Exec(e.Name , e.Description,e.Location,e.DateTime,e.UserId)
-	if err != nil {
-		return err
-	}
+    // Update the Event struct with the new event's ID.
+    e.ID = id
 
-	id,err := result.LastInsertId()
-	e.ID = id
-	return nil
+    // Return nil to indicate the operation was successful.
+    return nil
 }
 
 func GetAllEvents() ([]Event ,error){
