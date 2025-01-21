@@ -3,7 +3,7 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
+	
 
 	"example.com/rest-api/db"
 	"example.com/rest-api/utils"
@@ -48,12 +48,9 @@ func (u *User) Save() error {
 }
 
 
-// ValidateCredentials checks if the provided password matches the stored hashed password for the user.
-// It queries the database for the user's email and retrieves the associated hashed password.
-// If the password is valid, it returns nil; otherwise, it returns an error indicating invalid credentials.
 func (u *User) ValidateCredentials() error {
 
-    fmt.Print(u)
+    
     query := "SELECT id,password FROM users WHERE email = ?"
     row := db.DB.QueryRow(query, u.Email)
 

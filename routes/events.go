@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"example.com/rest-api/models"
-	"example.com/rest-api/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -53,25 +52,9 @@ func GetEvents(c *gin.Context){
 
 
 func CreateEvent(c *gin.Context){
-	token := c.Request.Header.Get("Authorization")
-
-
-	if token == "" {
-		c.JSON(http.StatusUnauthorized,gin.H{
-			"message": "unauthorized",
-		})
-		return
-	}
-
-	err := utils.VerifyToken(token)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized,gin.H{
-			"message": "unauthorized",
-		})
-		return
-	}
+	
 	var event models.Event
-	err = c.ShouldBindJSON(&event)
+	err := c.ShouldBindJSON(&event)
     
 	if err != nil {
     c.JSON(http.StatusBadRequest, gin.H{
@@ -82,8 +65,9 @@ func CreateEvent(c *gin.Context){
 	return
 	}
 
-	
-	event.UserId = 1
+	userId := c.GetInt64("userId")
+	// fmt.Print(userId,"===")
+	event.UserId = userId
 
 	err = event.Save()
 
@@ -112,13 +96,19 @@ func UpdateEvent(c *gin.Context){
 		return
 	}
 
-	_ , err = models.GetEventById(eventId)
+	userId := c.GetInt64("userId")
+	event , err := models.GetEventById(eventId)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "invalid event id",
 		})
 
+		return
+	}
+
+	if event.UserId != userId {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
 		return
 	}
 
@@ -153,6 +143,7 @@ func UpdateEvent(c *gin.Context){
 
 func DeleteEvent(c *gin.Context) {
 	eventId, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	userId := c.GetInt64("userId")
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -170,6 +161,12 @@ func DeleteEvent(c *gin.Context) {
 			"message": "not such event",
 		})
 
+		return
+	}
+
+
+	if event.UserId != userId {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
 		return
 	}
 
