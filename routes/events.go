@@ -182,3 +182,5 @@ func DeleteEvent(c *gin.Context) {
 	})
 
 }
+
+
